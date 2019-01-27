@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cassert>
 
+struct T {};
+
 struct deleter {
     void operator()(int *k) {
         std::cerr << "Functor deleter" << std::endl;
@@ -47,6 +49,17 @@ int main() {
         assert(first.get() == nullptr);
         assert(*second == 1337);
     }
+
+    {
+        not_std::unique_ptr<int> pep(new int(1337), [](int *ptr) { std::cerr << "Lambda deleter" << std::endl; delete ptr; });
+        pep.reset(nullptr);
+        std::cerr << "\"Lambda deleter\" should be above" << std::endl;
+    }
+
+    /* {
+        not_std::unique_ptr<T> a, b;
+        a + b; // CE
+    } */
 
     return 0;
 }

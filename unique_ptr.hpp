@@ -20,7 +20,7 @@ namespace not_std {
         deleter_object(T* ptr, Del&& del): ptr(ptr), del(std::move(del)) {}
 
         void release() override {
-            delete ptr;
+            ptr = nullptr;
         }
 
         ~deleter_object() override {
@@ -116,6 +116,10 @@ namespace not_std {
 
         T* operator->() const noexcept {
             return ptr;
+        }
+
+        explicit operator bool() const noexcept {
+            return ptr != nullptr;
         }
 
         template<typename U, typename... Args>
